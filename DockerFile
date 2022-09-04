@@ -1,0 +1,22 @@
+FROM python:3.9.13-bullseye
+
+RUN python3.9 --version
+
+RUN apt-get update;\
+    apt-get -y install openjdk-11-jdk wget git
+
+RUN java -version
+
+RUN mkdir /itemsflower;\
+    cd /itemsflower;\
+    wget https://github.com/intoolswetrust/jd-cli/releases/download/jd-cli-1.2.0/jd-cli-1.2.0-dist.tar.gz;\
+    tar -xvf jd-cli-1.2.0-dist.tar.gz jd-cli.jar
+
+WORKDIR /itemsflower
+
+COPY . .
+
+RUN pip install -r requirements.txt
+RUN cd /itemsflower
+
+CMD [ "python3.9" ]
