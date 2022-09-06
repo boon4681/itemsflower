@@ -19,6 +19,6 @@ fn not_found(req: &Request) -> String {
 #[rocket::launch]
 fn rocket() -> _ {
     rocket::build()
-        .register("/itemsflower/colors/",catchers![not_found])
-        .mount("/itemsflower/colors/", rocket::routes![manual::colors])
+        .register("/",catchers![not_found])
+        .mount("/flower/colors/", rocket::routes![manual::colors])
 }

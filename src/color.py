@@ -13,5 +13,11 @@ class ColorMap:
         y = (int)((1 - downfall) * 255)
         if(colormap in self.dist_colormap):
             r,g,b = self.dist_colormap[colormap][x,y][0:3]
-            return hex((r << 16) + (g << 8) + b)
+            return to_hex((r << 16) + (g << 8) + b)
         return "ERROR - Incorrect value given."
+    
+def to_hex(decimal):
+    r = (decimal >> 16 & 255)
+    g = (decimal >> 8 & 255)
+    b = (decimal & 255)
+    return '%02x%02x%02x' % (r,g,b)

@@ -2,15 +2,15 @@ import json
 import re
 
 from src.source import Source
-from src.colormap import ColorMap
+from src.color import ColorMap, to_hex
 
 
 class Reader:
     def __init__(self, source: Source):
         self.source = source
 
-    def read(self, version: str):
-        self.source.fetch(version)
+    def read(self, version: str,fetch:bool=True):
+        if(fetch): self.source.fetch(version)
         location = self.source.make(version)
         classes = [
             'net.minecraft.client.color.block.BlockColors',
@@ -75,20 +75,20 @@ class Reader:
             if(i not in colors):
                 colors[i] = []
             colors[i] = list(set(colors[i]).union(set(items_colors[i])))
-        items_colors[hex(7455580)] = ['lily_pad']
+        items_colors[to_hex(7455580)] = ['lily_pad']
 
-        with open(location.parsed.joinpath('spawn_egg_colors.json'), 'w') as f:
+        with open(location.parsed.joinpath('spawn_eggs.json'), 'w') as f:
             f.write(json.dumps(spawn_egg_colors))
-        with open(location.parsed.joinpath('items_colors.json'), 'w') as f:
+        with open(location.parsed.joinpath('items.json'), 'w') as f:
             f.write(json.dumps(items_colors))
-        with open(location.parsed.joinpath('block_colors.json'), 'w') as f:
+        with open(location.parsed.joinpath('blocks.json'), 'w') as f:
             f.write(json.dumps(block_colors))
         with open(location.parsed.joinpath('all.json'), 'w') as f:
             f.write(
                 json.dumps(
                     {
                         'spawn_egg_colors': spawn_egg_colors,
-                        'items_colors': items_colors,
+                        'item_colors': items_colors,
                         'block_colors': block_colors
                     }
                 )
@@ -96,7 +96,7 @@ class Reader:
 
         return {
             'spawn_egg_colors': spawn_egg_colors,
-            'items_colors': items_colors,
+            'item_colors': items_colors,
             'block_colors': block_colors
         }
 
@@ -142,8 +142,8 @@ def read_spawn_egg_colors(spawn_egg_class, text: str):
             primary_color, secondary_color = re.findall(
                 r'(\d+)', matches.group(3))
             items[matches.group(2)] = {
-                'primary_color': hex(int(primary_color)),
-                'secondary_color': hex(int(secondary_color))
+                'primary_color': to_hex(int(primary_color)),
+                'secondary_color': to_hex(int(secondary_color))
             }
     return items
 
@@ -157,7 +157,7 @@ def read_colors(colormap, foliage_colors, items, foliage_class, grass_colors_cla
     colors = {}
     for i in matches:
         if(i.group(1) == foliage_class["name"]):
-            color = hex(int(foliage_colors[i.group(2)]))
+            color = to_hex(int(foliage_colors[i.group(2)]))
         if(i.group(1) == grass_colors_class["name"]):
             parsed_input = list(map(lambda x: float(x), re.findall(
                 r'((?:[0-9]|[1-9][0-9]+)\.[0-9]+)', i.group(3))))

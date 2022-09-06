@@ -52,8 +52,12 @@ class Source:
 
         self.version_ids = [i['id'] for i in versions]
         with open('mcnotsupport', 'r') as f: self.notsupport = list(map(lambda x: x.replace('\n',''),f.readlines()))
-        self.versions = {self.version_ids[v]: versions[v] for v in range(len(self.version_ids))}
-    
+        def version(v):
+            versions[v]['support'] = v not in self.notsupport
+            return versions[v]
+        self.versions = {self.version_ids[v]: version(v) for v in range(len(self.version_ids))}
+    def is_support(self,version):
+        return self.versions[version]['support']
     def make(self,version):
         v = VersionPath(version,self.location)
         v.make()
@@ -150,8 +154,8 @@ class Source:
         decompiled = False
         if(location.note.exists()):
             with open(location.note,'r') as f: decompiled = f.read().find('decompiled') != -1
+        if(decompiled): return
         with zipfile.ZipFile(location.clientJAR,'r') as jar:
-            if(decompiled): return
             for k in classes_info:
                 info = classes_info[k]
                 name = info["name"]
