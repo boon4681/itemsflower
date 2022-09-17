@@ -11,8 +11,8 @@ import click
 @click.option('--fetch/--no-fetch',default=True,type=bool)
 def main(version:str,fetch:bool):
     source = Source('./source')
-    git = Git(version,source)
     if version == 'latest': version = source.version_ids[0]
+    git = Git(version,source)
     reader = importlib.import_module('readers.v1', package=None).Reader(source)
     reader.read(version,fetch)
     git.init()
