@@ -9,7 +9,7 @@ on:
         default: 'latest'
         type: string
 jobs:
-  test-python:
+  watering-and-bloom:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -20,6 +20,7 @@ jobs:
         with:
           distribution: 'corretto'
           java-version: '11'
+      - run: pip install -r requirements.txt
       - run: python main.py --version ${{ inputs.version }}
         env:
           github-username: boon4681
