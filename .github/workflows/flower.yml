@@ -21,6 +21,7 @@ jobs:
           distribution: 'corretto'
           java-version: '11'
       - run: pip install -r requirements.txt
+      - run: bash load-jar.sh
       - run: python main.py --version ${{ inputs.version }}
         env:
           github-username: boon4681
