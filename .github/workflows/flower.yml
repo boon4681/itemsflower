@@ -16,8 +16,12 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: '3.9'
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'corretto'
+          java-version: '11'
       - run: python main.py --version ${{ inputs.version }}
         env:
           github-username: boon4681
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          github-repository: boon4681/action-experiments
+          github-repository: boon4681/itemsflower
