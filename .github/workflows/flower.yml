@@ -1,0 +1,23 @@
+name: 'flower'
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Minecraft Version'
+        required: true
+        default: 'latest'
+        type: string
+jobs:
+  test-python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      - run: python main.py --version ${{ inputs.version }}
+        env:
+          github-username: boon4681
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-repository: boon4681/action-experiments

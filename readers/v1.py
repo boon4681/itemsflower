@@ -10,6 +10,7 @@ class Reader:
         self.source = source
 
     def read(self, version: str,fetch:bool=True):
+        print(version)
         if(fetch): self.source.fetch(version)
         location = self.source.make(version)
         classes = [
@@ -70,12 +71,8 @@ class Reader:
             spawn_eggs_class,
             self.source.read_java(version, items_class)
         )
-        colors = block_colors
-        for i in items_colors:
-            if(i not in colors):
-                colors[i] = []
-            colors[i] = list(set(colors[i]).union(set(items_colors[i])))
-        items_colors[to_hex(7455580)] = ['lily_pad']
+        colors = set(block_colors).union(set(items_colors))
+        items_colors['lily_pad'] = to_hex(7455580)
 
         with open(location.parsed.joinpath('spawn_eggs.json'), 'w') as f:
             f.write(json.dumps(spawn_egg_colors))
@@ -87,17 +84,17 @@ class Reader:
             f.write(
                 json.dumps(
                     {
-                        'spawn_egg_colors': spawn_egg_colors,
-                        'item_colors': items_colors,
-                        'block_colors': block_colors
+                        'spawn_eggs': spawn_egg_colors,
+                        'items': items_colors,
+                        'blocks': block_colors
                     }
                 )
             )
 
         return {
-            'spawn_egg_colors': spawn_egg_colors,
-            'item_colors': items_colors,
-            'block_colors': block_colors
+            'spawn_eggs': spawn_egg_colors,
+            'items': items_colors,
+            'blocks': block_colors
         }
 
 
@@ -167,8 +164,6 @@ def read_colors(colormap, foliage_colors, items, foliage_class, grass_colors_cla
             for j in i.group(4).replace(' ', '').split(','):
                 print(f"Ignored {items[j.split('.')[1]]}")
             continue
-        if(color not in colors):
-            colors[color] = []
         for j in i.group(4).replace(' ', '').split(','):
-            colors[color].append(items[j.split('.')[1]])
+            colors[items[j.split('.')[1]]] = color
     return colors

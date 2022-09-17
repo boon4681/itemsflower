@@ -53,7 +53,7 @@ class Source:
         self.version_ids = [i['id'] for i in versions]
         with open('mcnotsupport', 'r') as f: self.notsupport = list(map(lambda x: x.replace('\n',''),f.readlines()))
         def version(v):
-            versions[v]['support'] = v not in self.notsupport
+            versions[v]['support'] = self.version_ids[v] not in self.notsupport
             return versions[v]
         self.versions = {self.version_ids[v]: version(v) for v in range(len(self.version_ids))}
     def is_support(self,version):
