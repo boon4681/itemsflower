@@ -5,3 +5,5 @@ jd-cli.jar
 __pycache__
 server/target
 server/Cargo.lock
+parsed
+test.py

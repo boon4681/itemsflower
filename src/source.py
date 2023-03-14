@@ -19,8 +19,11 @@ class Node:
             self.name = match.group(5)
             self.type = match.group(2)
             self.input = match.group(4)
+
+    def __repr__(self):
+        return f'\n  {self.original_name} -> {self.name}'
     def __str__(self):
-        return f'{self.original_name} -> {self.name}'
+        return f'\n  {self.original_name} -> {self.name}'
 
 class VersionPath:
     def __init__(self,version,location:Path):
@@ -149,12 +152,12 @@ class Source:
                     break
         return classes_map
 
-    def decompile_classes(self,version,classes_info):
+    def decompile_classes(self,version,classes_info,force=False):
         location = self.make(version)
         decompiled = False
         if(location.note.exists()):
             with open(location.note,'r') as f: decompiled = f.read().find('decompiled') != -1
-        if(decompiled): return
+        if(decompiled and force==False): return
         with zipfile.ZipFile(location.clientJAR,'r') as jar:
             for k in classes_info:
                 info = classes_info[k]

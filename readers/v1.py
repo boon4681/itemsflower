@@ -21,7 +21,7 @@ class Reader:
             'net.minecraft.world.level.FoliageColor',
             'net.minecraft.client.renderer.BiomeColors',
             'net.minecraft.world.level.GrassColor',
-            'net.minecraft.world.item.SpawnEggItem'
+            'net.minecraft.world.item.SpawnEggItem',
         ]
         infos = self.source.get_classes(version, classes)
         foliage_colors_class = infos['net.minecraft.world.level.FoliageColor']
@@ -147,19 +147,23 @@ def read_spawn_egg_colors(spawn_egg_class, text: str):
 
 def read_colors(colormap, foliage_colors, items, foliage_class, grass_colors_class, biome_colors_class, text):
     matches = re.finditer(
-        f'({foliage_class["name"]}|{grass_colors_class["name"]}|{biome_colors_class["name"]}).(\w)\(([^()]*)\)(?:.+)(?:[\r\n])?'+'\{ (.+) \}',
+        f'({foliage_class["name"]}|{grass_colors_class["name"]}|{biome_colors_class["name"]})\.(\w)\(([^()]*)\)(?:.+)(?:[\r\n])?'+'\{ (.+) \}',
         text,
         re.MULTILINE
     )
     colors = {}
     for i in matches:
+        print(str(i))
         if(i.group(1) == foliage_class["name"]):
             color = to_hex(int(foliage_colors[i.group(2)]))
         if(i.group(1) == grass_colors_class["name"]):
             parsed_input = list(map(lambda x: float(x), re.findall(
                 r'((?:[0-9]|[1-9][0-9]+)\.[0-9]+)', i.group(3))))
-            color = str(colormap.get(
-                'grass', parsed_input[0], parsed_input[1]))
+            if(len(parsed_input) == 2):
+                color = str(colormap.get(
+                    'grass', parsed_input[0], parsed_input[1]))
+            else:
+                continue
         if(i.group(1) == biome_colors_class["name"]):
             for j in i.group(4).replace(' ', '').split(','):
                 print(f"Ignored {items[j.split('.')[1]]}")
