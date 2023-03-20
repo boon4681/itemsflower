@@ -1,6 +1,6 @@
 from pathlib import Path
 from src.source import Source
-from src.git import UserGit
+from src.git import ActionGit
 import importlib
 import numpy as np
 import threading
@@ -12,7 +12,7 @@ import click
 def main(version:str,fetch:bool):
     source = Source('./source')
     if version == 'latest': version = source.version_ids[0]
-    git = UserGit(version,source)
+    git = ActionGit(version,source)
     reader = importlib.import_module('readers.v1', package=None).Reader(source)
     reader.read(version,fetch)
     git.init()
